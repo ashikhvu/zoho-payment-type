@@ -18586,6 +18586,166 @@ def godownunit_dropdown(request):
 
 #___________________________Ashikh V U (start)__________________________________
 @login_required(login_url='login')
-def cash_in_hand(request):
-    return render(request,'cash_in_hand.html',{})
+def payment_type_cash_in_hand(request):
+    return render(request,'payment_type_cash_in_hand.html',{})
+    
+@login_required(login_url='login')
+def generate_pdf3(request,string_date,start_d,end_d):
+    print(f'start date : {start_d}  end date : {end_d}')
+
+    buffer = BytesIO()
+    # p = canvas.Canvas(buffer,pagesize=A4)
+    pdf_filename = "sample.pdf"
+    doc = SimpleDocTemplate(pdf_filename, pagesize=letter)
+
+
+    # doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    customers = customer.objects.filter(user=request.user.id)
+    d = string_date
+
+    data = [["DATE", "TYPE", "AMOUNT","BALANCE"]]
+
+    heading_style = ParagraphStyle(
+        'Heading1',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Centered alignment
+        fontSize=16,
+        fontName='Helvetica-Bold',
+    )
+    heading_style1 = ParagraphStyle(
+        'Heading1',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Centered alignment
+        fontSize=10,
+        fontName='Helvetica',
+    )
+    heading_style3 = ParagraphStyle(
+        'Heading1',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Centered alignment
+        fontSize=15,
+        fontName='Helvetica',
+    )
+    company = company_details.objects.get(id=request.user.id)
+    heading3 = Paragraph(company.company_name, heading_style3)
+    heading = Paragraph("CASH IN HAND", heading_style)
+    heading1 = Paragraph(f"{d}", heading_style1)
+    elements.append(heading3)
+    elements.append(heading)
+    elements.append(heading1)
+
+    for _ in customers:
+        data.append(["---------","-----","---------","---------"])
+
+    table = Table(data,colWidths='*')
+
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (0, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN',(0,1),(-1,-1 ),'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+
+    table.setStyle(style)
+    elements.append(table)
+    doc.build(elements)
+    pdf = buffer.getvalue()
+    buffer.close()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+    # response.write(pdf)
+    with open(pdf_filename, 'rb') as pdf_file:
+        response.write(pdf_file.read())
+    return response 
+
+@login_required(login_url='login')
+def payment_type_upi(request):
+    return render(request,'payment_type_upi.html',{})
+
+@login_required(login_url='login')
+def generate_pdf4(request,string_date,start_d,end_d):
+    print(f'start date : {start_d}  end date : {end_d}')
+
+    buffer = BytesIO()
+    # p = canvas.Canvas(buffer,pagesize=A4)
+    pdf_filename = "sample.pdf"
+    doc = SimpleDocTemplate(pdf_filename, pagesize=letter)
+
+
+    # doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    customers = customer.objects.filter(user=request.user.id)
+    d = string_date
+
+    data = [["DATE", "TYPE", "UPI ID","AMOUNT"]]
+
+    heading_style = ParagraphStyle(
+        'Heading1',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Centered alignment
+        fontSize=16,
+        fontName='Helvetica-Bold',
+    )
+    heading_style1 = ParagraphStyle(
+        'Heading1',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Centered alignment
+        fontSize=10,
+        fontName='Helvetica',
+    )
+    heading_style3 = ParagraphStyle(
+        'Heading1',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Centered alignment
+        fontSize=15,
+        fontName='Helvetica',
+    )
+    company = company_details.objects.get(id=request.user.id)
+    heading3 = Paragraph(company.company_name, heading_style3)
+    heading = Paragraph("UPI", heading_style)
+    heading1 = Paragraph(f"{d}", heading_style1)
+    elements.append(heading3)
+    elements.append(heading)
+    elements.append(heading1)
+
+    for _ in customers:
+        data.append(["---------","-----","---------","---------"])
+
+    data.append(["TOTAL UPI AMOUNT","","","0.00"])
+
+    table = Table(data,colWidths='*')
+
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (0, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN',(0,1),(-1,-1 ),'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+
+    table.setStyle(style)
+    elements.append(table)
+    doc.build(elements)
+    pdf = buffer.getvalue()
+    buffer.close()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+    # response.write(pdf)
+    with open(pdf_filename, 'rb') as pdf_file:
+        response.write(pdf_file.read())
+    return response 
+
+@login_required(login_url='login')
+def payment_type_bank(request):
+    return render(request,'payment_type_bank.html',{})
 #___________________________Ashikh V U (end)__________________________________

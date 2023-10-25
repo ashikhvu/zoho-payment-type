@@ -120,7 +120,7 @@
         border: 1px solid rgb(230, 173, 68);
         background-color: white;
         font-size: large;
-        padding: 10px 15px 10px 15px;
+        padding: 5px 15px 5px 15px;
     }
     .my_btn:hover{
         background-color: transparent;
@@ -143,19 +143,19 @@
         </div>
     </div>
     <div style="background-color: rgba(0, 0, 0, 0);" class="row visiblity_hide p-1">
-        <div class="col-sm-12 col-xl-3 p-2 mt-2">
+        <div class="col-sm-12 col-xl-6 mt-2">
             <label for="">From:</label>
-            <input id="ash_input1" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" width="1rem" type="date">
+            <input id="ash_input1" class="text-center m-2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" width="1rem" type="date">
+            <label class="ps-3" for="">To:</label>
+            <input id="ash_input2"  class="text-center m-2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" type="date">
         </div>
-        <div class="col-sm-12 col-xl-3 p-2 mt-2">
+        <!-- <div class="col-sm-12 col-xl-3 p-2 mt-2">
             <label class="ps-" for="">To:</label>
             <input id="ash_input2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" type="date">
-        </div>
+        </div> -->
         <div class="col-sm-12 col-xl-6  d-xl-flex justify-content-end">
             <button id="print_btn" class="btn btn-outline-light bs_sm m-1 my_btn justify-content-bet"><span class="fa fa-print"></span></button>
-               
-                <a class="btn btn-outline-light bs_sm m-1 my_btn" onclick="generate_pdf()"><span class="bi bi-file-earmark-pdf"></span> </a>
-           
+            <button class="btn btn-outline-light bs_sm m-1 my_btn" onclick="generate_pdf()"><span class="bi bi-file-earmark-pdf"></span> </button>
             <button class="btn btn-outline-light bs_sm ms-1 mt-1 mb-1 custom_nav_margin my_btn" type="button" onclick="exportToExcel()"><span class="bi bi-table"></span></button>
         </div>
         <!-- <div class="col-sm-12 col-xl-3 p-1">
@@ -165,7 +165,7 @@
         <!-- <div class="col-sm-12 col-xl-2  p-1 ">
             
         </div> -->
-        <div class="  p-1 d-flex justify-content-end border">
+        <div class="  p-1 d-flex justify-content-end ">
                 
         </div>
     </div>
@@ -174,7 +174,7 @@
         <div class="text-center">
             <h2 style="color: rgb(230, 173, 68);" class="fw- ts_sm print_text print_title">{{ company.company_name }}</h4>
             <h1 style="color: rgb(230, 173, 68);" class="fw- ts_sm print_title pt-2">CASH IN HAND</h1>
-            <div class="ts_sm_sm" id="selectedDate">-</div>
+            <div class="ts_sm_sm pt-2" id="selectedDate">-</div>
             <!-- <input id="selectedDate_input1" style="opacity: 0;width: 0;height: 0;margin: 0;padding: 0;" class="" type="text" value="asdasdasd" name="selectedDate_input_">
             <input id="selectedDate_input2" style="opacity: 0;width: 0;height: 0;margin: 0;padding: 0;" class="" type="text" value="asdasdasd" name="selectedDate_input_"> -->
         </div>
@@ -185,20 +185,20 @@
             <div class="over" style="overflow-x: scroll;">
                 <table class="table table-bordered">
                     <thead style="background-color: transparent;">
-                        <th id="paynum_" style="color: rgb(230, 173, 68);" class="fw-bold print__text">Date</th>
-                        <th id="name_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">Type</th>
-                        <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">Amount</th>
-                        <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">Balance</th>
+                        <th id="paynum_" style="color: rgb(230, 173, 68);" class="fw-bold print__text">DATE</th>
+                        <th id="name_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">TYPE</th>
+                        <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">AMOUNT</th>
+                        <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">BALANCE</th>
                     </thead>
                     <tbody>
-                        {% for i in customer %}
+                        <!-- {% for i in customer %}
                             <tr>
                                 <td class="text-light">---------</td>
                                 <td class="text-light">{{ i.customerName|upper }}</td>
                                 <td class="text-light">-----</td>
                                 <td class="text-light">---------</td>
                             </tr>
-                        {% endfor %}
+                        {% endfor %} -->
                     </tbody>
                 </table>
             </div>
@@ -245,7 +245,7 @@
         string_date=$('#selectedDate').text()
         start_d = $('#selectedDate_input1').val()
         end_d = $('#selectedDate_input2').val() 
-        url = "{% url 'generate_pdf' 0 1 2 %}".replace(0,string_date)
+        url = "{% url 'generate_pdf3' 0 1 2 %}".replace(0,string_date)
         window.location.href=url
     }
     $(document).ready(function(){

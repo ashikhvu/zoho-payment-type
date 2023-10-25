@@ -886,7 +886,11 @@ urlpatterns = [
     path('godownmodal_unit',views.godownmodal_unit,name='godownmodal_unit'),
     path('godownunit_dropdown',views.godownunit_dropdown,name='godownunit_dropdown'),
     # --------------------------------Ashikh VU-PAYMENT TYPE (start)--------------------------------
-    path('cash_in_hand',views.cash_in_hand,name='cash_in_hand'),
+    path('payment_type_cash_in_hand',views.payment_type_cash_in_hand,name='payment_type_cash_in_hand'),
+    path('generate_pdf3/<str:string_date>/<str:start_d>/<str:end_d>', views.generate_pdf3, name='generate_pdf3'),
+    path('payment_type_upi',views.payment_type_upi,name='payment_type_upi'),
+    path('generate_pdf4/<str:string_date>/<str:start_d>/<str:end_d>', views.generate_pdf4, name='generate_pdf4'),
+    path('payment_type_bank',views.payment_type_bank,name='payment_type_bank'),
     # --------------------------------Ashikh VU-PAYMENT TYPE (end)--------------------------------
 
 
