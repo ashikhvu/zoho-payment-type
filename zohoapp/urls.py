@@ -891,6 +891,8 @@ urlpatterns = [
     path('payment_type_upi',views.payment_type_upi,name='payment_type_upi'),
     path('generate_pdf4/<str:string_date>/<str:start_d>/<str:end_d>', views.generate_pdf4, name='generate_pdf4'),
     path('payment_type_bank',views.payment_type_bank,name='payment_type_bank'),
+    path('generate_pdf5/<str:string_date>/<str:start_d>/<str:end_d>/<str:transaction>', views.generate_pdf5, name='generate_pdf5'),
+    path('payment_type_bank_get_data', views.payment_type_bank_get_data, name='payment_type_bank_get_data'),
     # --------------------------------Ashikh VU-PAYMENT TYPE (end)--------------------------------
 
 

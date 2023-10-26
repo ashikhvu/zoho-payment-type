@@ -112,7 +112,7 @@
     table th{
         color:rgb(230, 173, 68) ;
     }
-    table:hover{
+    table tr:hover{
         background-color: rgb(41, 41, 41);
     }
     .my_btn{
@@ -157,9 +157,9 @@
             <input id="ash_input2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" type="date">
         </div> -->
         <div class="col-sm-12 col-xl-6  d-xl-flex justify-content-end">
-            <button id="print_btn" class="btn btn-outline-light bs_sm m-1 my_btn justify-content-bet"><span class="fa fa-print"></span></button>
-            <button class="btn btn-outline-light bs_sm m-1 my_btn" onclick="generate_pdf()"><span class="bi bi-file-earmark-pdf"></span> </button>
-            <button class="btn btn-outline-light bs_sm ms-1 mt-1 mb-1 custom_nav_margin my_btn" type="button" onclick="exportToExcel()"><span class="bi bi-table"></span></button>
+            <a id="print_btn" class="btn btn-outline-light bs_sm m-1 my_btn justify-content-bet"style="padding: 0.7rem 1rem;"type="button"><span class="fa fa-print"></span></a>
+            <a class="btn btn-outline-light bs_sm m-1 my_btn" onclick="generate_pdf()"style="padding: 0.7rem 1rem;"type="button"><span class="bi bi-file-earmark-pdf"></span> </a>
+            <a class="btn btn-outline-light bs_sm ms-1 mt-1 mb-1 custom_nav_margin my_btn" style="padding: 0.7rem 1rem;"type="button" onclick="exportToExcel()"><span class="bi bi-table"></span></a>
         </div>
         <!-- <div class="col-sm-12 col-xl-3 p-1">
             <label for="">To:</label>
@@ -210,7 +210,7 @@
                             </tr>
                         {% endfor %} -->
                         <tr>
-                            <td id="print_left_edge" class="fw-bold" style="color: rgb(230, 173, 68);border: none;">TOTAL UPI AMOUNT</td>
+                            <td id="print_left_edge" class="fw-bold text-start" style="color: rgb(230, 173, 68);border: none;">TOTAL UPI AMOUNT</td>
                             <td style="border: transparent"></td>
                             <td style="border: transparent"></td>
                             <td>0</td>

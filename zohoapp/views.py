@@ -18709,7 +18709,7 @@ def generate_pdf4(request,string_date,start_d,end_d):
     )
     company = company_details.objects.get(id=request.user.id)
     heading3 = Paragraph(company.company_name, heading_style3)
-    heading = Paragraph("UPI", heading_style)
+    heading = Paragraph("UPI DETAILS", heading_style)
     heading1 = Paragraph(f"{d}", heading_style1)
     elements.append(heading3)
     elements.append(heading)
@@ -18747,5 +18747,102 @@ def generate_pdf4(request,string_date,start_d,end_d):
 
 @login_required(login_url='login')
 def payment_type_bank(request):
-    return render(request,'payment_type_bank.html',{})
+    banks = Bankcreation.objects.all()
+    trans = transactions.objects.all()
+    return render(request,'payment_type_bank.html',{"banks":banks,
+                                                    'trans':trans})
+
+@login_required(login_url='login')
+def generate_pdf5(request,string_date,start_d,end_d,transaction):
+    print(f'start date : {start_d}  end date : {end_d}')
+
+    buffer = BytesIO()
+    # p = canvas.Canvas(buffer,pagesize=A4)
+    pdf_filename = "sample.pdf"
+    doc = SimpleDocTemplate(pdf_filename, pagesize=letter)
+
+
+    # doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    customers = customer.objects.filter(user=request.user.id)
+    d = string_date
+
+    data = [["NAME", "IFSC CODE", "ACCOUNT NUMBER","BRANCH","OPENING BALANCE"]]
+
+    heading_style = ParagraphStyle(
+        'Heading1',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Centered alignment
+        fontSize=16,
+        fontName='Helvetica-Bold',
+    )
+    heading_style1 = ParagraphStyle(
+        'Heading1',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Centered alignment
+        fontSize=10,
+        fontName='Helvetica',
+    )
+    heading_style3 = ParagraphStyle(
+        'Heading1',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Centered alignment
+        fontSize=15,
+        fontName='Helvetica',
+    )
+    company = company_details.objects.get(id=request.user.id)
+    heading3 = Paragraph(company.company_name, heading_style3)
+    heading = Paragraph("BANK DETAILS", heading_style)
+    heading1 = Paragraph(f"{d}", heading_style1)
+    elements.append(heading3)
+    elements.append(heading)
+    elements.append(heading1)
+
+    for i in transaction:
+        data.append([".......","-----","---------","---------"])
+        print(i.bank.name)
+
+    data.append(["Balance","","","0.00"])
+
+    # table = Table(data,colWidths='*')
+    table = Table(data)
+
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (0, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN',(0,1),(-1,-1 ),'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ])
+
+    table.setStyle(style)
+    elements.append(table)
+    doc.build(elements)
+    pdf = buffer.getvalue()
+    buffer.close()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+    # response.write(pdf)
+    with open(pdf_filename, 'rb') as pdf_file:
+        response.write(pdf_file.read())
+    return response 
+
+
+@login_required(login_url='login')
+def payment_type_bank_get_data(request):
+    banks = Bankcreation.objects.all()
+    bank_name = request.POST.get('bank_name')
+    bank_detail = Bankcreation.objects.get(name=bank_name)
+    transaction = transactions.objects.filter(bank_id=bank_detail.id)
+    startdate = request.POST.get('start_date')
+    enddate = request.POST.get('end_date')
+    if enddate != "" and startdate != "":
+        transaction = transaction.filter(date__gte=startdate,date__lte=enddate)
+    return TemplateResponse(request,"payment_type_bank_get_data.html",{"banks":banks,
+                                                                        "transaction":transaction,
+                                                                        "bank_detail":bank_detail})
 #___________________________Ashikh V U (end)__________________________________

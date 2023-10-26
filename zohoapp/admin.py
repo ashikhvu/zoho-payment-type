@@ -1,11 +1,12 @@
 from django.contrib import admin
-from .models import AddItem,Purchase,Sales,Unit,Journal,JournalEntry,JournalComment
+from .models import AddItem,Purchase,Sales,Unit,Journal,JournalEntry,JournalComment,transactions
 
 # Register your models here.
 admin.site.register(AddItem)
 admin.site.register(Purchase)
 admin.site.register(Sales)
 admin.site.register(Unit)
+admin.site.register(transactions)
 
 #.....................mirna.............................manual journal..................................................
 

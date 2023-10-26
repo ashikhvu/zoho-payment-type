@@ -112,7 +112,7 @@
     table th{
         color:rgb(230, 173, 68) ;
     }
-    table:hover{
+    table tr:hover{
         background-color: rgb(41, 41, 41);
     }
     .my_btn{
@@ -145,21 +145,23 @@
             </div>
         </div>
     </div>
+<form action="" method="post">
+    {% csrf_token %}
     <div style="background-color: rgba(0, 0, 0, 0);" class="row visiblity_hide p-1">
         <div class="col-sm-12 col-xl-6 mt-2">
             <label for="">From:</label>
-            <input id="ash_input1" class="text-center m-2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" width="1rem" type="date">
+            <input id="ash_input1" class="text-center m-2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" width="1rem" type="date" required name="start_date">
             <label class="ps-3" for="">To:</label>
-            <input id="ash_input2"  class="text-center m-2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" type="date">
+            <input id="ash_input2"  class="text-center m-2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" type="date" required name="end_date">
         </div>
         <!-- <div class="col-sm-12 col-xl-3 p-2 mt-2">
             <label class="ps-" for="">To:</label>
             <input id="ash_input2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" type="date">
         </div> -->
         <div class="col-sm-12 col-xl-6  d-xl-flex justify-content-end">
-            <button id="print_btn" class="btn btn-outline-light bs_sm m-1 my_btn justify-content-bet"><span class="fa fa-print"></span></button>
-            <button class="btn btn-outline-light bs_sm m-1 my_btn" onclick="generate_pdf()"><span class="bi bi-file-earmark-pdf"></span> </button>
-            <button class="btn btn-outline-light bs_sm ms-1 mt-1 mb-1 custom_nav_margin my_btn" type="button" onclick="exportToExcel()"><span class="bi bi-table"></span></button>
+            <a id="print_btn" class="btn btn-outline-light bs_sm m-1 my_btn justify-content-bet" style="padding: 0.7rem 1rem;"type="button"><span class="fa fa-print" ></span></a>
+            <a class="btn btn-outline-light bs_sm m-1 my_btn"onclick="generate_pdf()"style="padding: 0.7rem 1rem;" type="button"><span class="bi bi-file-earmark-pdf" ></span> </a>
+            <a class="btn btn-outline-light bs_sm ms-1 mt-1 mb-1 custom_nav_margin my_btn" style="padding: 0.7rem 1rem;"type="button" onclick="exportToExcel()"><span class="bi bi-table"></span></a>
         </div>
         <!-- <div class="col-sm-12 col-xl-3 p-1">
             <label for="">To:</label>
@@ -176,46 +178,51 @@
         <br>
         <div class="text-center">
             <h2 style="color: rgb(230, 173, 68);" class="fw- ts_sm print_text print_title">{{ company.company_name }}</h4>
-            <h1 style="color: rgb(230, 173, 68);" class="fw- ts_sm print_title pt-2">BANK</h1>
+            <h1 style="color: rgb(230, 173, 68);" class="fw- ts_sm print_title pt-2">BANK DETAILS</h1>
             <div class="ts_sm_sm pt-2" id="selectedDate">-</div>
             <!-- <input id="selectedDate_input1" style="opacity: 0;width: 0;height: 0;margin: 0;padding: 0;" class="" type="text" value="asdasdasd" name="selectedDate_input_">
             <input id="selectedDate_input2" style="opacity: 0;width: 0;height: 0;margin: 0;padding: 0;" class="" type="text" value="asdasdasd" name="selectedDate_input_"> -->
         </div>
 
-        <div class="row">
+        <div id="input_print_hide" class="row">
             <div class="col-sm-12 col-xl-3 p-2">
-                <input type="text" class="form-control ps-2" style="background: transparent;" placeholder="Search items..">
+                <input name="bank_name" style="background-color: transparent;" class="form-control" type="text" id="search"  placeholder="Search.." autocomplete="off"  list="my_list"
+                hx-post="{% url 'payment_type_bank_get_data' %}"
+                hx-target="#payment_type_bank_get_data"
+                hx-trigger="input"
+                >
             </div>
             <div class="col-sm-12 col-xl-9"></div>
         </div>
-        
+        <datalist  id="my_list" >
+            {% for i in banks %}
+            <option class="ps-5 pe-5" value="{{ i.name|upper }}"></option>
+            {% endfor %}
+        </datalist>
+            
+</form>    
+       
+       
         <hr>
     <br>
         <div class="over" style="overflow: hidden;">
-            <div class="over" style="overflow-x: scroll;">
+            <div id="payment_type_bank_get_data" class="over" style="overflow-x: scroll;">
                 <table class="table table-bordered">
                     <thead style="background-color: transparent;">
-                        <th id="paynum_" style="color: rgb(230, 173, 68);" class="fw-bold print__text">DATE</th>
-                        <th id="name_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">TYPE</th>
-                        <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">UPI ID</th>
-                        <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">AMOUNT</th>
+                        <th id="paynum_" style="color: rgb(230, 173, 68);" class="fw-bold print__text">NAME</th>
+                        <th id="name_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">IFSC CODE</th>
+                        <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">ACCOUNT NUMBER</th>
+                        <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">BRANCH</th>
+                        <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">OPENING BALANCE</th>
                     </thead>
-                    <tbody>
-                        <!-- {% for i in customer %}
-                            <tr>
-                                <td class="text-light">---------</td>
-                                <td class="text-light">{{ i.customerName|upper }}</td>
-                                <td class="text-light">-----</td>
-                                <td class="text-light">---------</td>
-                            </tr>
-                        {% endfor %} -->
-                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+<div style="height: 30rem;">
 
+</div>
 <script>
     var date1='',date2='';
     var date1object1='',date1object2=''
@@ -255,7 +262,8 @@
         string_date=$('#selectedDate').text()
         start_d = $('#selectedDate_input1').val()
         end_d = $('#selectedDate_input2').val() 
-        url = "{% url 'generate_pdf3' 0 1 2 %}".replace(0,string_date)
+        url = "{% url 'generate_pdf5' 0 1 2 trans %}".replace(0,string_date)
+        url.replace('trans',{{ transaction }})
         window.location.href=url
     }
     $(document).ready(function(){
@@ -269,6 +277,8 @@
             $('.print__text').addClass('text-dark')
             $('table td').addClass('text-dark')
             $('.print_title').css({'color':'black'})
+            $('#input_print_hide').hide()
+            $('#print_left_edge').css({'border-left':'1px solid black'})
             var pc = $('#printable_content').html()
             var backup = document.body.innerHTML
             document.body.innerHTML = pc
@@ -284,7 +294,17 @@
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
         XLSX.writeFile(wb, 'report.xlsx');
     }
-
+    
+    $(document).ready(function(){
+        $('#ash_input1').on('change',function(){
+            $('#search').val("")
+        })
+    })
+    $(document).ready(function(){
+        $('#ash_input2').on('change',function(){
+            $('#search').val("")
+        })
+    })
 </script>
 
 <script src="{% static 'js/my_calendar.js' %}"></script>
