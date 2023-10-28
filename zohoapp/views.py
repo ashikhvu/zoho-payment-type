@@ -19012,10 +19012,10 @@ def generate_pdf4(request,jsondict,start_d,end_d):
 
 @login_required(login_url='login')
 def payment_type_bank(request):
-    banks = Bankcreation.objects.all()
-    trans = transactions.objects.all()
+    banks = Bankcreation.objects.filter(user=request.user)
+    transaction = transactions.objects.filter(user=request.user)
     return render(request,'payment_type_bank.html',{"banks":banks,
-                                                    'trans':trans})
+                                                    'transaction':transaction})
 
 @login_required(login_url='login')
 def generate_pdf5(request,jsondict,start_d,end_d):
@@ -19031,7 +19031,11 @@ def generate_pdf5(request,jsondict,start_d,end_d):
     bank_name = dict['bank_name']
     if bank_name != '':
         bank_detail = Bankcreation.objects.get(name=bank_name)
-        transaction = transactions.objects.filter(bank_id=bank_detail.id)
+        transaction = transactions.objects.filter(user=request.user,bank_id=bank_detail.id)
+        if start_date != "" and end_date != "":
+            transaction = transaction.filter(date__gte=start_date,date__lte=end_date)
+    else:
+        transaction = transactions.objects.filter(user=request.user)
         if start_date != "" and end_date != "":
             transaction = transaction.filter(date__gte=start_date,date__lte=end_date)
     
@@ -19047,7 +19051,7 @@ def generate_pdf5(request,jsondict,start_d,end_d):
 
     d = dict['string_date']
 
-    data = [["NAME", "IFSC CODE", "ACCOUNT NUMBER","BRANCH","OPENING BALANCE"]]
+    data = [["NAME", "DATE", "TYPE","AMOUNT","BALANCE"]]
 
     heading_style = ParagraphStyle(
         'Heading1',
@@ -19080,9 +19084,12 @@ def generate_pdf5(request,jsondict,start_d,end_d):
 
 
     for i in transaction:
-        data.append([str(i.bank.name),str(i.bank.ifsc),str(i.bank.ac_no),str(i.bank.branch),str(i.bank.opn_bal)])
+        data.append([str(i.bank.name),str(i.date),str(i.type),str(i.amount),"--------"])
 
-    data.append(["Balance","","","","0.00"])
+    # for i in transaction:
+    #     data.append([str(i.bank.name),str(i.date),str(i.type),str(i.amount),str(i.bank.balance)])
+
+    # data.append(["Balance","","","","0.00"])
     # data.append(["Balance","","","",str(bank_detail.balance)])
 
     # table = Table(data,colWidths='*')
@@ -19114,14 +19121,20 @@ def generate_pdf5(request,jsondict,start_d,end_d):
 
 @login_required(login_url='login')
 def payment_type_bank_get_data(request):
-    banks = Bankcreation.objects.all()
-    bank_name = request.POST.get('bank_name')
-    bank_detail = Bankcreation.objects.get(name=bank_name)
-    transaction = transactions.objects.filter(bank_id=bank_detail.id)
+    print('\n\nenterd\n\n')
     startdate = request.POST.get('start_date')
     enddate = request.POST.get('end_date')
-    if enddate != "" and startdate != "":
+    banks = Bankcreation.objects.filter(user=request.user)
+    try:
+        bank_name = request.POST.get('bank_name')
+        bank_detail = Bankcreation.objects.get(user=request.user,name=bank_name)
+        transaction = transactions.objects.filter(user=request.user,bank_id=bank_detail.id)
+        if enddate != "" and startdate != "":
+            transaction = transaction.filter(date__gte=startdate,date__lte=enddate)
+    except:
+        transaction = transactions.objects.filter(user=request.user)
         transaction = transaction.filter(date__gte=startdate,date__lte=enddate)
+        bank_detail=None
     return TemplateResponse(request,"payment_type_bank_get_data.html",{"banks":banks,
                                                                         "transaction":transaction,
                                                                         "bank_detail":bank_detail})

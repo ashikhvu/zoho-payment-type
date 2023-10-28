@@ -152,7 +152,11 @@
             <label for="">From:</label>
             <input id="ash_input1" class="text-center m-2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" width="1rem" type="date" required name="start_date">
             <label class="ps-3" for="">To:</label>
-            <input id="ash_input2"  class="text-center m-2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" type="date" required name="end_date">
+            <input id="ash_input2"  class="text-center m-2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" type="date" required name="end_date"
+            hx-post="{% url 'payment_type_bank_get_data' %}"
+            hx-target="#payment_type_bank_get_data"
+            hx-trigger="input"
+            >
         </div>
         <!-- <div class="col-sm-12 col-xl-3 p-2 mt-2">
             <label class="ps-" for="">To:</label>
@@ -160,7 +164,7 @@
         </div> -->
         <div class="col-sm-12 col-xl-6  d-xl-flex justify-content-end">
             <a id="print_btn" class="btn btn-outline-light bs_sm m-1 my_btn justify-content-bet" style="padding: 0.7rem 1rem;"type="button"><span class="fa fa-print" ></span></a>
-            <a class="btn btn-outline-light bs_sm m-1 my_btn"onclick="generate_pdf()"style="padding: 0.7rem 1rem;" type="button"><span class="bi bi-file-earmark-pdf" ></span> </a>
+            <a class="btn btn-outline-light bs_sm m-1 my_btn"onclick="generate_pdf()"style="padding: 0.7rem 1rem;" type="submit"><span class="bi bi-file-earmark-pdf" ></span> </a>
             <a class="btn btn-outline-light bs_sm ms-1 mt-1 mb-1 custom_nav_margin my_btn" style="padding: 0.7rem 1rem;"type="button" onclick="exportToExcel()"><span class="bi bi-table"></span></a>
         </div>
         <!-- <div class="col-sm-12 col-xl-3 p-1">
@@ -209,12 +213,30 @@
             <div id="payment_type_bank_get_data" class="over" style="overflow-x: scroll;">
                 <table class="table table-bordered">
                     <thead style="background-color: transparent;">
-                        <th id="paynum_" style="color: rgb(230, 173, 68);" class="fw-bold print__text">NAME</th>
-                        <th id="name_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">IFSC CODE</th>
-                        <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">ACCOUNT NUMBER</th>
-                        <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">BRANCH</th>
-                        <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">OPENING BALANCE</th>
+                        <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">NAME</th>
+                        <th id="paynum_" style="color: rgb(230, 173, 68);" class="fw-bold print__text">DATE</th>
+                        <th id="name_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">TYPE</th>
+                        <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">AMOUNT</th>
+                        <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">BALANCE</th>
                     </thead>
+                    <tbody>
+                        {% for i in transaction %}
+                        <tr>
+                            <td class="text-light">{{ i.bank.name }}</td>
+                            <td class="text-light">{{ i.date|upper }}</td>
+                            <td class="text-light">{{ i.type|upper }}</td>
+                            <td class="text-light">{{ i.amount }}</td>
+                            <td class="text-light">{{ i.bank.balance }}</td>
+                        </tr>                     
+                        {% endfor %}
+                        <!-- <tr>
+                            <td id="print_left_edge" style="color: rgb(230, 173, 68);border: none;" class="fw-bold">Balance</td>
+                            <td style="border: none;"></td>
+                            <td style="border: none;"></td>
+                            <td style="border: none;"></td>
+                            <td class="text-light">{{ bank_detail.balance }}</td>
+                        </tr> -->
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -263,8 +285,8 @@
         var start_date = $('#ash_input1').val()
         var end_date = $('#ash_input2').val()
         var bank_name = $('#search').val()
-        if ( bank_name !== '')
-        {
+        // if ( bank_name !== '')
+        // {
             var main_dict = {
                 string_date : string_date,
                 start_date : start_date,
@@ -274,12 +296,12 @@
             var jsondict =  JSON.stringify(main_dict)
             url = "{% url 'generate_pdf5' 0 1 2 %}".replace(0,jsondict)
             window.location.href=url
-        }
-        else
-        {
+        // }
+        // else
+        // {
 
-        alert('Please select the bank')
-        }
+        // alert('Please select the bank')
+        // }
     }
     $(document).ready(function(){
         $('#print_btn').click(function(){
@@ -310,14 +332,30 @@
         XLSX.writeFile(wb, 'report.xlsx');
     }
     
+    // $(document).ready(function(){
+    //     $('#ash_input1').on('change',function(){
+    //         $('#search').val("")
+    //     })
+    // })
+    // $(document).ready(function(){
+    //     $('#ash_input2').on('change',function(){
+    //         $('#search').val("")
+    //     })
+    // })
+    // $(document).ready(function(){
+    //     $('#ash_input2').on('input',function(){
+    //         if($('#ash_input1').val()!=='')
+    //         {
+    //             window.location.href='{% url "payment_type_bank_get_data" %}'
+    //         }
+    //     })
+    // })
     $(document).ready(function(){
-        $('#ash_input1').on('change',function(){
-            $('#search').val("")
-        })
-    })
-    $(document).ready(function(){
-        $('#ash_input2').on('change',function(){
-            $('#search').val("")
+        $('#search').on('input',function(){
+            if($(this).val()=='')
+            {
+                window.location.href=''
+            }
         })
     })
 </script>
