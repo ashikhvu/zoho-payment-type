@@ -154,7 +154,7 @@
             <input id="ash_input2" style="border-radius: 7px;border: 2px solid rgb(228, 189, 33);padding: 1px;" type="date">
         </div> -->
         <div class="col-sm-12 col-xl-6  d-xl-flex justify-content-end">
-            <a id="print_btn" class="btn btn-outline-light bs_sm m-1 my_btn justify-content-bet"style="padding: 0.7rem 1rem;"type="button"><span class="fa fa-print"></span></a>
+            <a id="print_btn" class="btn btn-outline-light bs_sm m-1 my_btn justify-content-bet"style="padding: 0.7rem 1rem;"type="button" onclick="printContent()"><span class="fa fa-print"></span></a>
             <a class="btn btn-outline-light bs_sm m-1 my_btn" onclick="generate_pdf()"style="padding: 0.7rem 1rem;"type="button"><span class="bi bi-file-earmark-pdf"></span> </a>
             <a class="btn btn-outline-light bs_sm ms-1 mt-1 mb-1 custom_nav_margin my_btn" style="padding: 0.7rem 1rem;"type="button" onclick="exportToExcel()"><span class="bi bi-table"></span></a>
         </div>
@@ -172,8 +172,8 @@
     <div id="printable_content">
         <br>
         <div class="text-center">
-            <h2 style="color: rgb(230, 173, 68);" class="fw- ts_sm print_text print_title">{{ company.company_name }}</h4>
-            <h1 style="color: rgb(230, 173, 68);" class="fw- ts_sm print_title pt-2">CASH IN HAND</h1>
+            <h2 class="fw- ts_sm print_text text-warning print_title">{{ company.company_name }}</h4>
+            <h1 class="fw- ts_sm print_title text-warning pt-2">CASH IN HAND</h1>
             <div class="ts_sm_sm pt-2" id="selectedDate">-</div>
             <!-- <input id="selectedDate_input1" style="opacity: 0;width: 0;height: 0;margin: 0;padding: 0;" class="" type="text" value="asdasdasd" name="selectedDate_input_">
             <input id="selectedDate_input2" style="opacity: 0;width: 0;height: 0;margin: 0;padding: 0;" class="" type="text" value="asdasdasd" name="selectedDate_input_"> -->
@@ -248,25 +248,87 @@
         url = "{% url 'generate_pdf3' 0 1 2 %}".replace(0,string_date)
         window.location.href=url
     }
-    $(document).ready(function(){
-        $('#print_btn').click(function(){
+    // $(document).ready(function(){
+    //     $('#print_btn').click(function(){
+    //         $('.over').css({'overflow':'hidden'})
+    //         $('body').css({'color':'black'})
+    //         $('html').css({'color':'black','font-size': '11px'})
+    //         $('.table').removeClass('table-striped table-hover table-dark')
+    //         $('.table').addClass('table-bordered border-dark bg-light')
+    //         $('.print__text').removeClass('text-light')
+    //         $('.print__text').addClass('text-dark')
+    //         $('table td').addClass('text-dark')
+    //         $('.print_title').css({'color':'black'})
+    //         var pc = $('#printable_content').html()
+    //         var backup = document.body.innerHTML
+    //         document.body.innerHTML = pc
+    //         window.print()
+    //         document.body.innerHTML = backup
+    //         window.location.href = ''
+    //     })
+    // })
+    function printContent() {
+            // Create an iframe to render the content
             $('.over').css({'overflow':'hidden'})
-            $('body').css({'color':'black'})
+            // $('body').css({'color':'black'})
             $('html').css({'color':'black','font-size': '11px'})
-            $('.table').removeClass('table-striped table-hover table-dark')
-            $('.table').addClass('table-bordered border-dark bg-light')
+            $('.table').removeClass('table-striped')
+            $('table th').css({'color':'black'})
             $('.print__text').removeClass('text-light')
             $('.print__text').addClass('text-dark')
             $('table td').addClass('text-dark')
             $('.print_title').css({'color':'black'})
-            var pc = $('#printable_content').html()
-            var backup = document.body.innerHTML
-            document.body.innerHTML = pc
-            window.print()
-            document.body.innerHTML = backup
-            window.location.href = ''
-        })
-    })
+            $('#input_print_hide').hide()
+            $('#print_left_edge').css({'border-left':'1px solid black'})
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            // Get the printable content
+            const printableContent = document.getElementById('printable_content').innerHTML;
+            iframe.contentDocument.open();
+            iframe.contentDocument.write('<html><head><title>Print</title>');
+            iframe.contentDocument.write('<style>');
+            iframe.contentDocument.write(`
+                /* Custom alignment styles for printed content */
+                body {
+                    font-family: Arial, sans-serif; /* Change font-family if needed */
+                    text-align: center; /* Center-align the content */
+                    
+                }
+                table {
+                    width: 100%; /* Make the table width 100% */
+                    border:1px solid black;
+                    border-collapse:collapse;
+                }
+                th, td {
+                    border:1px solid black;
+                    border-collapse:collapse;
+                    text-align:center;
+                    padding: 10px; /* Add padding for better spacing */
+                }
+            `);
+            iframe.contentDocument.write('</style>');
+            iframe.contentDocument.write('</head><body>' + printableContent + '</body></html>');
+            iframe.contentDocument.close();
+    
+        
+            // Print the iframe content
+            iframe.contentWindow.print();
+            document.body.removeChild(iframe);
+
+            $('.over').css({'overflow':'visible'})
+            // $('body').css({'color':'inherit'})
+            $('html').css({'color':'inherit','font-size': 'inherit'})
+            $('.table').addClass('table-striped table-hover')
+            $('.table').removeClass('bg-light')
+            $('.print__text').removeClass('text-dark')
+            $('.print__text').addClass('text-warning')
+            $('table td').removeClass('text-dark')
+            $('.print_title').css({'color':'inherit'})
+            $('#input_print_hide').show()
+            $('#print_left_edge').css({'border-left':'1px solid white'})
+            
+        }
     function exportToExcel() {
         var table = document.querySelector('table');
         var ws = XLSX.utils.table_to_sheet(table);

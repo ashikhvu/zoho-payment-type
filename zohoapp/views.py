@@ -18972,7 +18972,7 @@ def generate_pdf4(request,jsondict,start_d,end_d):
         fontSize=15,
         fontName='Helvetica',
     )
-    company = company_details.objects.get(id=request.user.id)
+    company = company_details.objects.get(user = request.user)
     heading3 = Paragraph(company.company_name, heading_style3)
     heading = Paragraph("UPI DETAILS", heading_style)
     heading1 = Paragraph(f"{d}", heading_style1)
@@ -19027,10 +19027,10 @@ def generate_pdf5(request,jsondict,start_d,end_d):
     print(start_date)
     print(end_date)
 
-    banks = Bankcreation.objects.all()
+    banks = Bankcreation.objects.filter(user=request.user)
     bank_name = dict['bank_name']
     if bank_name != '':
-        bank_detail = Bankcreation.objects.get(name=bank_name)
+        bank_detail = Bankcreation.objects.get(name=bank_name,user=request.user)
         transaction = transactions.objects.filter(user=request.user,bank_id=bank_detail.id)
         if start_date != "" and end_date != "":
             transaction = transaction.filter(date__gte=start_date,date__lte=end_date)
@@ -19051,7 +19051,7 @@ def generate_pdf5(request,jsondict,start_d,end_d):
 
     d = dict['string_date']
 
-    data = [["NAME", "DATE", "TYPE","AMOUNT","BALANCE"]]
+    data = [["DATE", "TYPE","AMOUNT","BALANCE"]]
 
     heading_style = ParagraphStyle(
         'Heading1',
@@ -19074,7 +19074,7 @@ def generate_pdf5(request,jsondict,start_d,end_d):
         fontSize=15,
         fontName='Helvetica',
     )
-    company = company_details.objects.get(id=request.user.id)
+    company = company_details.objects.get(user=request.user)
     heading3 = Paragraph(company.company_name, heading_style3)
     heading = Paragraph("BANK DETAILS", heading_style)
     heading1 = Paragraph(f"{d}", heading_style1)
@@ -19084,16 +19084,16 @@ def generate_pdf5(request,jsondict,start_d,end_d):
 
 
     for i in transaction:
-        data.append([str(i.bank.name),str(i.date),str(i.type),str(i.amount),"--------"])
+        data.append([str(i.date),str(i.type),str(i.amount),"--------"])
 
     # for i in transaction:
-    #     data.append([str(i.bank.name),str(i.date),str(i.type),str(i.amount),str(i.bank.balance)])
+    #     data.append([str(i.date),str(i.type),str(i.amount),str(i.bank.balance)])
 
     # data.append(["Balance","","","","0.00"])
     # data.append(["Balance","","","",str(bank_detail.balance)])
 
-    # table = Table(data,colWidths='*')
-    table = Table(data)
+    table = Table(data,colWidths='*')
+    # table = Table(data)
 
     style = TableStyle([
         ('BACKGROUND', (0, 0), (0, 0), colors.white),
@@ -19133,9 +19133,10 @@ def payment_type_bank_get_data(request):
             transaction = transaction.filter(date__gte=startdate,date__lte=enddate)
     except:
         transaction = transactions.objects.filter(user=request.user)
-        transaction = transaction.filter(date__gte=startdate,date__lte=enddate)
-        bank_detail=None
+        if enddate != "" and startdate != "":
+            transaction = transaction.filter(date__gte=startdate,date__lte=enddate)
+        bank_detail= None
     return TemplateResponse(request,"payment_type_bank_get_data.html",{"banks":banks,
                                                                         "transaction":transaction,
-                                                                        "bank_detail":bank_detail})
+                                                                        "bank_detail":bank_detail,})
 #___________________________Ashikh V U (end)__________________________________

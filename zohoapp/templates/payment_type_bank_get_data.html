@@ -1,7 +1,7 @@
 {% if transaction %}
 <table class="table table-bordered">
     <thead style="background-color: transparent;">
-        <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">NAME</th>
+        <!-- <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">NAME</th> -->
         <th id="paynum_" style="color: rgb(230, 173, 68);" class="fw-bold print__text">DATE</th>
         <th id="name_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">TYPE</th>
         <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">AMOUNT</th>
@@ -10,7 +10,7 @@
     <tbody>
         {% for i in transaction %}
         <tr>
-            <td class="text-light">{{ i.bank.name }}</td>
+            <!-- <td class="text-light">{{ i.bank.name }}</td> -->
             <td class="text-light">{{ i.date|upper }}</td>
             <td class="text-light">{{ i.type|upper }}</td>
             <td class="text-light">{{ i.amount }}</td>
@@ -26,11 +26,12 @@
         </tr> -->
     </tbody>
 </table>
+<input style="visibility: hidden;" id="bank_title" type="text" value="{{ bank_detail.name }}">
 {% else %}
 <table class="table table-bordered">
     <thead style="background-color: transparent;">
         <thead style="background-color: transparent;">
-            <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">NAME</th>
+            <!-- <th id="date_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">NAME</th> -->
             <th id="paynum_" style="color: rgb(230, 173, 68);" class="fw-bold print__text">DATE</th>
             <th id="name_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">TYPE</th>
             <th id="refnum_"style="color: rgb(230, 173, 68);" class="fw-bold print__text">AMOUNT</th>
@@ -38,6 +39,7 @@
         </thead>
     </thead>
 </table>
+<input style="visibility: hidden;" id="bank_title" type="text" value="{{ bank_detail.name }}">
 <h5 class="text-center fw-bold p-3">no data available</h5>
 
 {% endif %}
